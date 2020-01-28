@@ -12,7 +12,7 @@ const jobSchema = new mongoose.Schema({
   client: String
 });
 
-jobSchema.add({
+JjobSchemaob.add({
   type: String,
   responsible: String,
   cost: Number,
@@ -40,8 +40,8 @@ app.get('/jobs', (req, res) => {
 })
 
 app.post('/add-job', (req, res) => {
-  const job = new Job({ name: req.body.name, client: req.body.client });
-  job.save().then(() => console.log('New job added'));
+  const job = new Job({ name: req.body.name, client: req.body.client, value: req.body.value, type: req.body.type, responsible: req.body.responsible, cost: req.body.cost, eta: req.body.eta, days: req.body.days, status: req.body.status, notes: req.body.notes  })
+  job.save().then(() => console.log('New job added'))
   res.sendStatus(200)
 }
 

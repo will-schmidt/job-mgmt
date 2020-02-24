@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const port = 3000
+const port = 5000
 const mongoose = require('mongoose')
 
 mongoose.connect(
@@ -11,10 +11,7 @@ mongoose.connect(
 
 const jobSchema = new mongoose.Schema({
   name: String,
-  client: String
-})
-
-jobSchema.add({
+  client: String,
   type: String,
   responsible: String,
   cost: Number,

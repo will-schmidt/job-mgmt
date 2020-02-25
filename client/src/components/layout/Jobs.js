@@ -1,17 +1,28 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import queryString from "query-string";
+import axios from "axios";
 
 export default class Jobs extends Component {
   state = {
     jobs: []
-  }
+  };
   async componentDidMount() {
     try {
-      const res = await axios('http://localhost:5000/jobs')
-      console.log(res.data)
-      this.setState({ jobs: res.data })
+      const res = await axios("http://localhost:5000/jobs");
+
+      // const parsed = queryString.parse(this.props.location.search);
+
+      this.setState({
+        jobs: res.data
+      });
+      // this.setState({
+      //   jobs: res.data.filter(
+      //     el => el.status && el.status.toLowerCase() === parsed.status
+      //   )
+      // });
     } catch (error) {
-      console.error("Couldn't connect to server " + error.message)
+      console.error("Couldn't connect to server " + error.message);
     }
   }
 
@@ -55,7 +66,9 @@ export default class Jobs extends Component {
             {this.state.jobs.map(job => {
               return (
                 <tr>
-                  <th>{job.name}</th>
+                  <th>
+                    <Link to={`job/${job._id}`}>{job.name}</Link>
+                  </th>
                   <td>{job.client}</td>
                   <td>{job.type}</td>
                   <td>{job.responsible}</td>
@@ -65,11 +78,22 @@ export default class Jobs extends Component {
                   <td>{job.days}</td>
                   <td>{job.status}</td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 }
+
+/**
+ * 
+ *  {Object.keys(job)
+                    .filter(key => key !== "_id")
+                    .filter(key => key !== "__v")
+                    .filter(key => key !== "notes")
+                    .map(key => (
+                      <th>{job[key]}</th>
+                    ))}
+ */

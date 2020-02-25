@@ -52,21 +52,27 @@ app.get("/jobs", (req, res) => {
     .then(data => res.send(data));
 });
 
-app.post("/add-job", (req, res) => {
+app.post("/add-client", (req, res) => {
+  const { body } = req;
+  const client = new Client(body);
+
+  client.save().then(() => console.log("New client added"));
+  res.sendStatus(200);
+});
+
+app.post("/add-job", async (req, res) => {
   try {
     const { body } = req;
-    const newJob = { ...body };
-    if (!newJob.status) {
-      newJob.status = "Started";
-    }
-    newJob.client = {
-      name: newJob.client
-    };
-    const job = new Job(body);
-    job.save().then(() => console.log("New job added"));
-    res.sendStatus(200);
+    const { client, ...restOfJob } = body;
+    const foundClient = await Client.findOne({ name: client });
+    const job = new Job(restOfJob);
+    job.client = foundClient._id;
+    job.save().then(() => {
+      console.log("New job added");
+      res.sendStatus(200);
+    });
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
     res.sendStatus(500);
   }
 });

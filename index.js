@@ -1,13 +1,24 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const bodyParser = require('body-parser')
 const port = 5000
 const mongoose = require('mongoose')
 
+app.use(cors())
+
 mongoose.connect(
-  'mongodb+srv://dbUser:zu4UwRl9vEvuIDym@job-mgmt-clustor-zbi27.mongodb.net/test?retryWrites=true&w=majority',
+  'mongodb+srv://dbUser:SdqynXkn@job-mgmt-clustor-zbi27.mongodb.net/test?retryWrites=true&w=majority',
   { useNewUrlParser: true }
 )
+
+const db = mongoose.connection
+db.on('error', () => {
+  console.log('> error occurred from the database')
+})
+db.once('open', () => {
+  console.log('> successfully opened the database')
+})
 
 const jobSchema = new mongoose.Schema({
   name: String,

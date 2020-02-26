@@ -4,6 +4,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = 5000;
 const mongoose = require("mongoose");
+const Client = require("./schemas/client");
+const Job = require("./schemas/job");
+const Note = require("./schemas/note");
+const User = require("./schemas/user");
 
 require("dotenv").config();
 
@@ -18,28 +22,6 @@ db.on("error", () => {
 db.once("open", () => {
   console.log("> successfully opened the database");
 });
-
-const clientSchema = new mongoose.Schema({
-  name: String,
-  country: String
-});
-
-const Client = mongoose.model("Client", clientSchema);
-
-const jobSchema = new mongoose.Schema({
-  name: String,
-  client: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
-  type: String,
-  responsible: String,
-  cost: Number,
-  value: Number,
-  eta: Date,
-  days: Number,
-  status: String,
-  notes: String
-});
-
-const Job = mongoose.model("Job", jobSchema);
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -60,6 +42,46 @@ app.post("/add-client", (req, res) => {
   res.sendStatus(200);
 });
 
+app.get("/clients", (req, res) => {
+  const response = Client.find().then(data => res.send(data));
+});
+
+app.post("/sign-up", (req, res) => {
+  const { body } = req;
+  const user = new User(body);
+
+  user.save().then(() => console.log("User created!"));
+  res.sendStatus(200);
+});
+
+app.get("/users", (req, res) => {
+  const response = User.find().then(data => res.send(data));
+});
+
+app.post("/create-note", async (req, res) => {
+  const { body } = req;
+  // rest operator
+  const { email, jobId, ...restOfNote } = body;
+  const foundUser = await User.findOne({ email });
+  const foundJob = await Job.findById(jobId);
+  const note = new Note(restOfNote);
+
+  note.createdBy = foundUser._id;
+  note.job = foundJob._id;
+
+  note.save().then(() => {
+    console.log("New note added");
+    res.sendStatus(200);
+  });
+});
+
+app.get("/get-notes", (req, res) => {
+  const response = Note.find()
+    .populate("createdBy")
+    .populate("job")
+    .then(data => res.send(data));
+});
+
 app.post("/add-job", async (req, res) => {
   try {
     const { body } = req;
@@ -73,7 +95,7 @@ app.post("/add-job", async (req, res) => {
       res.sendStatus(200);
     });
   } catch (error) {
-    // console.error(error.message);
+    console.error(error.message);
     res.sendStatus(500);
   }
 });

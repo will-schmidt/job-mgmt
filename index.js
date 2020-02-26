@@ -63,6 +63,7 @@ app.post("/add-client", (req, res) => {
 app.post("/add-job", async (req, res) => {
   try {
     const { body } = req;
+    // rest operator
     const { client, ...restOfJob } = body;
     const foundClient = await Client.findOne({ name: client });
     const job = new Job(restOfJob);

@@ -35,15 +35,18 @@ app.get('/jobs', (req, res) => {
 })
 
 app.get('/jobs/:id', async (req, res) => {
-  console.log(req.params.id)
   try {
-    const job = await Job.findById(req.params.id)
+    const job = await Job.findById(req.params.id).populate('client')
 
-    if (!job) throw new Error()
+    if (!job) return res.status(404).send({ error: 'Not Found' })
 
     return res.send({ job })
   } catch (e) {
-    return res.status(404).send({ error: 'Not Found' })
+    if (e instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ error: 'Not a valid ID' })
+    } else {
+      return res.status(500).send({ error: 'Internal Error' })
+    }
   }
 })
 
@@ -59,6 +62,22 @@ app.get('/clients', (req, res) => {
   const response = Client.find().then(data => res.send(data))
 })
 
+app.get('/clients/:id', async (req, res) => {
+  try {
+    const client = await Client.findById(req.params.id)
+
+    if (!client) return res.status(404).send({ error: 'Not Found' })
+
+    return res.send({ client })
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ error: 'Not a valid ID' })
+    } else {
+      return res.status(500).send({ error: 'Internal Error' })
+    }
+  }
+})
+
 app.post('/sign-up', (req, res) => {
   const { body } = req
   const user = new User(body)
@@ -69,6 +88,22 @@ app.post('/sign-up', (req, res) => {
 
 app.get('/users', (req, res) => {
   const response = User.find().then(data => res.send(data))
+})
+
+app.get('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+
+    if (!user) return res.status(404).send({ error: 'Not Found' })
+
+    return res.send({ user })
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ error: 'Not a valid ID' })
+    } else {
+      return res.status(500).send({ error: 'Internal Error' })
+    }
+  }
 })
 
 app.post('/create-note', async (req, res) => {

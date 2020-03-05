@@ -1,35 +1,64 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import queryString from "query-string";
-import axios from "axios";
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import queryString from 'query-string'
+import axios from 'axios'
 
 export default class Jobs extends Component {
   state = {
     jobs: []
-  };
+  }
   async componentDidMount() {
     try {
-      const res = await axios("http://localhost:5000/jobs");
+      const res = await axios('http://localhost:5000/jobs')
 
       // const parsed = queryString.parse(this.props.location.search);
 
       this.setState({
         jobs: res.data
-      });
+      })
       // this.setState({
       //   jobs: res.data.filter(
       //     el => el.status && el.status.toLowerCase() === parsed.status
       //   )
       // });
     } catch (error) {
-      console.error("Couldn't connect to server " + error.message);
+      console.error("Couldn't connect to server " + error.message)
     }
   }
 
   render() {
+    if (!this.state.jobs) return null
     return (
       <div className="container is-widescreen">
-        <h1 className="title is-1 has-text-left">Jobs</h1>
+        <nav className="level">
+          {/* Left side */}
+          <h1 className="title is-3 has-text-left">Jobs</h1>
+          {/* Right side */}
+          <div className="level-right">
+            <p className="level-item">
+              <strong>All active</strong>
+            </p>
+            <p className="level-item">
+              <a>Awaiting quote</a>
+            </p>
+            <p className="level-item">
+              <a>Quoted</a>
+            </p>
+            <p className="level-item">
+              <a>Started</a>
+            </p>
+            <p className="level-item">
+              <a>Done</a>
+            </p>
+            <p className="level-item">
+              <a>Invoiced</a>
+            </p>
+            <p className="level-item">
+              <a className="button is-success">New Job</a>
+            </p>
+          </div>
+        </nav>
+        {console.log(this.state.jobs)}
         <table>
           <thead>
             <tr>
@@ -63,27 +92,27 @@ export default class Jobs extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.jobs.map(job => {
+            {this.state.jobs.map((job, i) => {
               return (
-                <tr>
+                <tr key={i}>
                   <th>
                     <Link to={`job/${job._id}`}>{job.name}</Link>
                   </th>
-                  <td>{job.client}</td>
+                  <td>{job.client.name}</td>
                   <td>{job.type}</td>
                   <td>{job.responsible}</td>
                   <td>{job.cost}</td>
                   <td>{job.value}</td>
                   <td>{job.eta}</td>
                   <td>{job.days}</td>
-                  <td>{job.status}</td>
+                  <td>{job.status}</td> */}
                 </tr>
-              );
+              )
             })}
           </tbody>
         </table>
       </div>
-    );
+    )
   }
 }
 

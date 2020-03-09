@@ -7,6 +7,7 @@ import Jobs from './components/layout/Jobs'
 import Footer from './components/layout/Footer'
 import Users from './pages/Users'
 import Job from './pages/Job'
+import AddJob from './pages/AddJob'
 
 const Home = () => (
   <React.Fragment>
@@ -22,6 +23,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/job/:jobId" component={Job} />
+          <Route path="/add-job" component={AddJob} />
           <Route path="/users" component={Users} />
         </Switch>
         <Footer />

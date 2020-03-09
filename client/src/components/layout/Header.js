@@ -45,7 +45,9 @@ export default class Header extends Component {
                     <a className="navbar-item">Quoted</a>
                     <a className="navbar-item">Active</a>
                     <hr className="navbar-divider" />
-                    <a className="navbar-item">Add new job</a>
+                    <Link to="/add-job" className="navbar-item">
+                      Add new job
+                    </Link>
                   </div>
                 </div>
               </div>

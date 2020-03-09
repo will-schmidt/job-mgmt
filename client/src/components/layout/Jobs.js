@@ -54,7 +54,9 @@ export default class Jobs extends Component {
               <a>Invoiced</a>
             </p>
             <p className="level-item">
-              <a className="button is-success">New Job</a>
+              <Link to="/add-job" className="button is-success">
+                New Job
+              </Link>
             </p>
           </div>
         </nav>

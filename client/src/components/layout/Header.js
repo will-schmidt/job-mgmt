@@ -50,6 +50,22 @@ export default class Header extends Component {
                     </Link>
                   </div>
                 </div>
+
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <Link to="/clients" className="navbar-link">
+                    Clients
+                  </Link>
+
+                  <div className="navbar-dropdown">
+                    <Link to="/clients" className="navbar-item">
+                      All clients
+                    </Link>
+                    <hr className="navbar-divider" />
+                    <Link to="/add-client" className="navbar-item">
+                      Add new client
+                    </Link>
+                  </div>
+                </div>
               </div>
 
               <div className="navbar-end">
@@ -94,10 +110,12 @@ export default class Header extends Component {
                   </div>
 
                   <div className="buttons">
-                    <a className="button is-primary">
+                    <Link to="/signup" className="button is-primary">
                       <strong>Sign up</strong>
-                    </a>
-                    <a className="button is-light">Log in</a>
+                    </Link>
+                    <Link to="/signin" className="button is-light">
+                      Log in
+                    </Link>
                   </div>
                 </div>
               </div>

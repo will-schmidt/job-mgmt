@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import DatePicker from 'react-datepicker'
 import axios from 'axios'
 import "./addjob.css"
+import 'react-datepicker/dist/react-datepicker.css'
 
 
 export default class AddJob extends Component {
@@ -12,7 +14,7 @@ export default class AddJob extends Component {
     responsible: '',
     cost: '',
     value: '',
-    eta: '' 
+    eta: new Date() 
   }
 
 
@@ -33,13 +35,22 @@ export default class AddJob extends Component {
 
     event.preventDefault()
     const newJob = this.state
-    console.log(newJob)
+    // console.log(newJob)
 
-    try {
-      axios.post('http://localhost:5000/add-job', newJob)
-    } catch (error) {
-      console.log(`Failed {error}`)
-    }
+    // try {
+    //   axios.post('http://localhost:5000/add-job', newJob)
+    // } catch (error) {
+    //   console.log(`Failed {error}`)
+    // }
+
+    axios
+      .post('http://localhost:5000/add-job', newJob)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
 
     
 
@@ -194,12 +205,21 @@ export default class AddJob extends Component {
               <div className="field">
                 <label className="label">Projected finish date</label>
                 <div className="control">
-                  <input
+                  {/* <input
                     className="input"
                     name="eta"
                     onChange={this.handleChange}
                     type="text"
                     placeholder="ETA for completing this job"
+                    value={this.state.eta}
+                  /> */}
+                  <DatePicker
+                    className="input"
+                    dateFormat="dd/MM/yyyy"
+                    name="eta"
+                    //selected={this.state.eta}
+                    onChange={this.handleChange}
+                    placeholderText="Est. completion date"
                     value={this.state.eta}
                   />
                 </div>

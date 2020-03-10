@@ -8,6 +8,9 @@ import Footer from './components/layout/Footer'
 import Users from './pages/Users'
 import Job from './pages/Job'
 import AddJob from './pages/AddJob'
+import SignUp from './pages/SignUp'
+import SignIn from './pages/SignIn'
+import Clients from './pages/Clients'
 
 const Home = () => (
   <React.Fragment>
@@ -25,6 +28,9 @@ function App() {
           <Route path="/job/:jobId" component={Job} />
           <Route path="/add-job" component={AddJob} />
           <Route path="/users" component={Users} />
+          <Route path="/signup" component={SignUp} />
+          <Route path="/signin" component={SignIn} />
+          <Route path="/clients" component={Clients} />
         </Switch>
         <Footer />
       </Router>

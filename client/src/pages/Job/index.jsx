@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import moment from 'moment'
 
-export default class User extends Component {
+export default class Job extends Component {
   state = {
     job: null
   }

@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import "./addjob.css"
+
 
 export default class AddJob extends Component {
   state = {
-    jobName: '',
+    name: '',
     client: '',
-    jobDescription: '',
-    typeOfJob: '',
+    description: '',
+    type: '',
     responsible: '',
-    jobCost: '',
-    jobBillable: '',
+    cost: '',
+    value: '',
     eta: '' 
   }
 
@@ -27,9 +29,26 @@ export default class AddJob extends Component {
   }
 
   handleSubmit(event) {
-    console.log(this.state)
+
 
     event.preventDefault()
+    const newJob = this.state
+    console.log(newJob)
+
+    try {
+      axios.post('http://localhost:5000/add-job', newJob)
+    } catch (error) {
+      console.log(`Failed {error}`)
+    }
+
+    
+
+
+    // console.log(this.state)
+
+
+
+    // event.preventDefault()
   }
 
 
@@ -50,8 +69,8 @@ export default class AddJob extends Component {
                     className="input"
                     type="text"
                     placeholder="Name of job"
-                    name="jobName"
-                    value={this.state.jobName}
+                    name="name"
+                    value={this.state.name}
                     onChange={this.handleChange}
                   />
                 </div>
@@ -60,9 +79,20 @@ export default class AddJob extends Component {
                 <label class="label">Client</label>
                 <div class="control">
                   <div class="select is-fullwidth">
-                    <select>
-                      <option value="design">Design</option>
-                      <option value="development">Development</option>
+                    <select
+                      name="client"
+                      value={this.state.client}
+                      onChange={this.handleChange}
+                    >
+                      <option value="">Select a client...</option>
+                      <option value="Anderosa Investments">
+                        Anderosa Investments
+                      </option>
+                      <option value="Easy Step Podiatry">
+                        Easy Step Podiatry
+                      </option>
+                      <option value="Gametradar">Gametradar</option>
+                      <option value="Tribu">Tribu</option>
                     </select>
                   </div>
                 </div>
@@ -73,8 +103,9 @@ export default class AddJob extends Component {
                   <textarea
                     class="textarea"
                     placeholder="What's involved in this job?"
-                    value={this.state.jobDescription}
-                    onChange={this.handleChange} name="jobDescription"
+                    value={this.state.description}
+                    onChange={this.handleChange}
+                    name="description"
                   ></textarea>
                 </div>
               </div>
@@ -84,11 +115,23 @@ export default class AddJob extends Component {
                     <label class="label">Type of job</label>
                     <div class="control">
                       <label class="radio">
-                        <input type="radio" name="typejob" />
+                        <input
+                          type="radio"
+                          name="type"
+                          value="Design"
+                          checked={this.state.type === 'Design'}
+                          onChange={this.handleChange}
+                        />
                         &nbsp;Design
                       </label>
                       <label class="radio">
-                        <input type="radio" name="typejob" />
+                        <input
+                          type="radio"
+                          name="type"
+                          value="Development"
+                          checked={this.state.type === 'Development'}
+                          onChange={this.handleChange}
+                        />
                         &nbsp;Development
                       </label>
                     </div>
@@ -99,9 +142,15 @@ export default class AddJob extends Component {
                     <label class="label">Project lead</label>
                     <div class="control">
                       <div class="select">
-                        <select>
-                          <option>User one</option>
-                          <option>User two</option>
+                        <select
+                          name="responsible"
+                          value={this.state.responsible}
+                          onChange={this.handleChange}
+                        >
+                          <option value="">Select user...</option>
+                          <option value="Cristian Florea">
+                            Cristian Florea
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -117,7 +166,10 @@ export default class AddJob extends Component {
                       <input
                         className="input"
                         type="text"
-                        placeholder="Estimate of what it'll cost us to deliver" value={this.state.jobCost} onChange={this.handleChange} name="jobCost"
+                        placeholder="Estimate of what it'll cost us to deliver"
+                        value={this.state.cost}
+                        onChange={this.handleChange}
+                        name="cost"
                       />
                     </div>
                   </div>
@@ -130,8 +182,9 @@ export default class AddJob extends Component {
                         className="input"
                         type="text"
                         placeholder="Estimate of what client will be invoiced"
-                        value={this.state.jobBillable}
-                        onChange={this.handleChange} name="jobBillable"
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        name="value"
                       />
                     </div>
                   </div>

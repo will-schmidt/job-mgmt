@@ -68,7 +68,8 @@ export default class Clients extends Component {
 
                                  <td>{client.country}</td>
                                  <td>
-                                   <a target="_blank" href={`https://go.xero.com/Contacts/View/${client.xeroId}`}>View in Xero</a>
+                                   {client.xeroId !== undefined ? <a target="_blank" href={`https://go.xero.com/Contacts/View/${client.xeroId}`}>View in Xero</a> : `No Xero URL`}
+                                   
                                  </td>
                                  <td>&nbsp;</td>
                                  <td>&nbsp;</td>

@@ -33,7 +33,9 @@ export default class SignUp extends Component {
                      .post('http://localhost:5000/sign-up', newUser)
                      .then(response => {
                        console.log(response)
-                       this.state.showSuccess = true
+                       this.setState({
+                         showSuccess: true
+                       })
                      })
                      .catch(error => {
                        console.log(error.response)

@@ -169,8 +169,9 @@ app.post('/add-job', async (req, res) => {
     job.responsible = foundUser._id
     job.save().then(() => {
       console.log('New job added')
-      res.sendStatus(200)
     })
+    // .catch(error => console.log(error)) [Mongo error msg?]
+    res.sendStatus(200)
   } catch (error) {
     console.error(error.message)
     res.sendStatus(500)

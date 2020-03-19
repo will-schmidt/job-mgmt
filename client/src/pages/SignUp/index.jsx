@@ -9,6 +9,8 @@ export default class SignUp extends Component {
                    email: '',
                    password: '',
                    phone: '',
+
+                   
                    type: 'standard',
                    showSuccess: undefined
                  }

@@ -1,6 +1,7 @@
 import React from 'react'
 import 'bulma/css/bulma.css'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import 'react-datepicker/dist/react-datepicker.css'
 import './App.css'
 import Header from './components/layout/Header'
 import Jobs from './components/layout/Jobs'

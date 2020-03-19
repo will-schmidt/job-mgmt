@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import axios from 'axios'
+import moment from 'moment'
 
 export default class Jobs extends Component {
   state = {
@@ -61,7 +62,7 @@ export default class Jobs extends Component {
           </div>
         </nav>
         {console.log(this.state.jobs)}
-        <table>
+        <table className="table is-bordered is-striped is-hoverable is-fullwidth">
           <thead>
             <tr>
               <th>
@@ -102,12 +103,14 @@ export default class Jobs extends Component {
                   </th>
                   <td>{job.client.name}</td>
                   <td>{job.type}</td>
-                  <td>{job.responsible}</td>
+                  <td>
+                    {job.responsible.firstName} {job.responsible.lastName}
+                  </td>
                   <td>{job.cost}</td>
                   <td>{job.value}</td>
-                  <td>{job.eta}</td>
-                  <td>{job.days}</td>
-                  <td>{job.status}</td> */}
+                  <td>{moment(job.eta).format('D MMM YYYY')}</td>
+                  <td>{moment(job.eta).diff(moment(), 'days') + 1}</td>
+                  <td>{job.status}</td>
                 </tr>
               )
             })}

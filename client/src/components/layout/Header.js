@@ -19,7 +19,7 @@ export default class Header extends Component {
           role="navigation"
           aria-label="main navigation"
         >
-          <div class="container is-widescreen">
+          <div className="container is-widescreen">
             <div className="navbar-brand">
               <Link to="/">
                 <img src={logo} alt="Job Mgmt app" height="131" length="400" />

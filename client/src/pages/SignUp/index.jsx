@@ -10,7 +10,7 @@ export default class SignUp extends Component {
                    password: '',
                    phone: '',
                    type: 'standard',
-                   showSuccess: false
+                   showSuccess: undefined
                  }
 
                  handleChange(event) {
@@ -49,13 +49,13 @@ export default class SignUp extends Component {
 
                    return (
                      <div className="container is-widescreen">
-                       <div class="columns is-mobile is-centered">
-                         <div class="column is-half">
+                       <div className="columns is-mobile is-centered">
+                         <div className="column is-half">
                            <form onSubmit={this.handleSubmit}>
                              <div className="card">
                                <div className="card-content">
                                  <h1 className="title is-3">Sign Up</h1>
-                                 <p class="subtitle">
+                                 <p className="subtitle">
                                    Already have an account?&nbsp;
                                    <Link to="/signin">
                                      Click here to log in
@@ -155,10 +155,10 @@ export default class SignUp extends Component {
                                  </div>
                                </div>
 
-                               <footer class="card-footer">
-                                 <div class="field is-grouped  card-footer-item">
-                                   <div class="control container">
-                                     <button class="button is-medium is-fullwidth is-primary">
+                               <footer className="card-footer">
+                                 <div className="field is-grouped  card-footer-item">
+                                   <div className="control container">
+                                     <button className="button is-medium is-fullwidth is-primary">
                                        Register New User Account
                                      </button>
                                    </div>
@@ -168,10 +168,11 @@ export default class SignUp extends Component {
                            </form>
                            &nbsp;
                            <br />
+                           {console.log(this.state.showSuccess)}
                            {this.state.showSuccess ? (
-                             <div class="notification is-success signup-success">
-                               <button class="delete"></button>
-                               <strong class="subtitle">
+                             <div className="notification is-success signup-success">
+                               <button className="delete"></button>
+                               <strong className="subtitle">
                                  <b>New User Created</b>
                                </strong>
                                <br />
@@ -180,7 +181,19 @@ export default class SignUp extends Component {
                                <br />
                                <Link to="/signin">Click here to log in</Link>.
                              </div>
-                           ) : null}
+                           ) : typeof this.state.showSuccess ==
+                             'undefined' ? null : (
+                             <div className="notification is-warning signup-success">
+                               <button className="delete"></button>
+                               <strong className="subtitle">
+                                 <b>Issue creating new user</b>
+                               </strong>
+                               <br />
+                               Oops, something went wrong.
+                               <br />
+                               Please contact support.
+                             </div>
+                           )}
                          </div>
                        </div>
                      </div>

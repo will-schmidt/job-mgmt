@@ -6,7 +6,7 @@ const port = 5000
 const mongoose = require('mongoose')
 const Client = require('./schemas/client')
 const Job = require('./schemas/job')
-const Note = require('./schemas/note')
+const JobNote = require('./schemas/jobNote')
 const User = require('./schemas/user')
 
 require('dotenv').config()
@@ -31,12 +31,15 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.get('/jobs', (req, res) => {
   const response = Job.find()
     .populate('client')
+    .populate('responsible')
     .then(data => res.send(data))
 })
 
 app.get('/jobs/:id', async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id).populate('client')
+    const job = await await Job.findById(req.params.id)
+      .populate('client')
+      .populate('responsible')
 
     if (!job) return res.status(404).send({ error: 'Not Found' })
 
@@ -106,38 +109,64 @@ app.get('/users/:id', async (req, res) => {
   }
 })
 
-app.post('/create-note', async (req, res) => {
-  const { body } = req
-  // rest operator
-  const { email, jobId, ...restOfNote } = body
-  const foundUser = await User.findOne({ email })
-  const foundJob = await Job.findById(jobId)
-  const note = new Note(restOfNote)
+app.post('/create-job-note', async (req, res) => {
+  try {
+    const { body } = req
+    // rest operator
+    const { createdBy, job, ...restOfJobNote } = body
+    const foundUser = await User.findOne({ _id: createdBy })
+    const foundJob = await Job.findOne({ _id: job })
+    const jobNote = new JobNote(restOfJobNote)
 
-  note.createdBy = foundUser._id
-  note.job = foundJob._id
+    jobNote.createdBy = foundUser._id
+    jobNote.job = foundJob._id
 
-  note.save().then(() => {
-    console.log('New note added')
-    res.sendStatus(200)
-  })
+    jobNote.save().then(() => {
+      console.log('New note added')
+      res.sendStatus(200)
+    })
+  } catch (error) {
+    console.log(error.message)
+    res.sendStatus(500)
+  }
 })
 
-app.get('/get-notes', (req, res) => {
-  const response = Note.find()
+app.get('/get-job-notes', (req, res) => {
+  const response = JobNote.find()
     .populate('createdBy')
     .populate('job')
     .then(data => res.send(data))
+})
+
+// NOt working
+app.get('/get-job-notes/:id', async (req, res) => {
+  try {
+    const jobNotes = await JobNote.find({ job: req.params.id }).populate(
+      'createdBy'
+    )
+
+    if (!jobNotes) return res.status(404).send({ error: 'Not Found' })
+
+    return res.send({ jobNotes })
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ error: 'Not a valid ID' })
+    } else {
+      return res.status(500).send({ error: 'Internal Error' })
+    }
+  }
 })
 
 app.post('/add-job', async (req, res) => {
   try {
     const { body } = req
     // rest operator
-    const { client, ...restOfJob } = body
-    const foundClient = await Client.findOne({ name: client })
+    const { client, responsible, ...restOfJob } = body
+    const foundClient = await Client.findOne({ _id: client })
+    const foundUser = await User.findOne({ _id: responsible })
     const job = new Job(restOfJob)
     job.client = foundClient._id
+    job.responsible = foundUser._id
     job.save().then(() => {
       console.log('New job added')
       res.sendStatus(200)

@@ -14,22 +14,32 @@ export default class AddJob extends Component {
                    responsible: '',
                    cost: '',
                    value: '',
-                   eta: new Date()
+                   eta: null,
+                   users: [],
+                   clients: []
                  }
+
+
 
                  handleChange(event) {
                    const target = event.target
-                   console.log(target)
-                   const value = target.type === 'checkbox' ? target.checked : target.value
+                   
+                   const value =
+                     target.type === 'checkbox' ? target.checked : target.value
                    const name = target.name
 
                    this.setState({
                      [name]: value
-
                    })
                  }
+                 handleDateChange = date => {
+                   this.setState({
+                     eta: date
+                   })
+                   
+                 }
 
-              
+                 
 
                  handleSubmit(event) {
                    event.preventDefault()
@@ -56,6 +66,21 @@ export default class AddJob extends Component {
                    // event.preventDefault()
                  }
 
+                 async componentDidMount(){
+                   const userResponse = await axios(
+                     `http://localhost:5000/users`
+                   )
+                   const clientsResponse = await axios(
+                     `http://localhost:5000/clients`
+                   )
+                   this.setState({
+                     users: userResponse.data,
+                     clients: clientsResponse.data
+                   })
+                   console.log(this.state.clients)
+ 
+                 }
+
                  render() {
                    this.handleChange = this.handleChange.bind(this)
                    this.handleSubmit = this.handleSubmit.bind(this)
@@ -79,10 +104,10 @@ export default class AddJob extends Component {
                                  />
                                </div>
                              </div>
-                             <div class="field">
-                               <label class="label">Client</label>
-                               <div class="control">
-                                 <div class="select is-fullwidth">
+                             <div className="field">
+                               <label className="label">Client</label>
+                               <div className="control">
+                                 <div className="select is-fullwidth">
                                    <select
                                      name="client"
                                      value={this.state.client}
@@ -91,27 +116,24 @@ export default class AddJob extends Component {
                                      <option value="">
                                        Select a client...
                                      </option>
-                                     <option value="Anderosa Investments">
-                                       Anderosa Investments
-                                     </option>
-                                     <option value="Easy Step Podiatry">
-                                       Easy Step Podiatry
-                                     </option>
-                                     <option value="Gametradar">
-                                       Gametradar
-                                     </option>
-                                     <option value="Tribu">Tribu</option>
+                                     {this.state.clients.map(client => {
+                                       return (
+                                         <option value={client._id}>
+                                           {client.name}
+                                         </option>
+                                       )
+                                     })}
                                    </select>
                                  </div>
                                </div>
                              </div>
-                             <div class="field">
-                               <label class="label">
+                             <div className="field">
+                               <label className="label">
                                  Description of project
                                </label>
-                               <div class="control">
+                               <div className="control">
                                  <textarea
-                                   class="textarea"
+                                   className="textarea"
                                    placeholder="What's involved in this job?"
                                    value={this.state.description}
                                    onChange={this.handleChange}
@@ -121,10 +143,10 @@ export default class AddJob extends Component {
                              </div>
                              <div className="columns">
                                <div className="column">
-                                 <div class="field">
-                                   <label class="label">Type of job</label>
-                                   <div class="control">
-                                     <label class="radio">
+                                 <div className="field">
+                                   <label className="label">Type of job</label>
+                                   <div className="control">
+                                     <label className="radio">
                                        <input
                                          type="radio"
                                          name="type"
@@ -134,7 +156,7 @@ export default class AddJob extends Component {
                                        />
                                        &nbsp;Design
                                      </label>
-                                     <label class="radio">
+                                     <label className="radio">
                                        <input
                                          type="radio"
                                          name="type"
@@ -150,10 +172,10 @@ export default class AddJob extends Component {
                                  </div>
                                </div>
                                <div className="column">
-                                 <div class="field">
-                                   <label class="label">Project lead</label>
-                                   <div class="control">
-                                     <div class="select">
+                                 <div className="field">
+                                   <label className="label">Project lead</label>
+                                   <div className="control is-expanded">
+                                     <div className="select is-fullwidth">
                                        <select
                                          name="responsible"
                                          value={this.state.responsible}
@@ -162,9 +184,14 @@ export default class AddJob extends Component {
                                          <option value="">
                                            Select user...
                                          </option>
-                                         <option value="Cristian Florea">
-                                           Cristian Florea
-                                         </option>
+                                         {this.state.users.map(user => {
+                                           return (
+                                             <option value={user._id}>
+                                               {user.firstName} {user.lastName}
+                                             </option>
+                                           )
+                                         })}
+                                         
                                        </select>
                                      </div>
                                    </div>
@@ -208,36 +235,66 @@ export default class AddJob extends Component {
                                  </div>
                                </div>
                              </div>
-
-                             <div className="field">
-                               <label className="label">
-                                 Projected finish date
-                               </label>
-                               <div className="control">
-                                 {/* <input
-                    className="input"
-                    name="eta"
-                    onChange={this.handleChange}
-                    type="text"
-                    placeholder="ETA for completing this job"
-                    value={this.state.eta}
-                  /> */}
-                                 <DatePicker
-                                   type="text"
-                                   className="input"
-                                   dateFormat="dd/MM/yyyy"
-                                   name="eta"
-                                  // selected={this.state.eta}
-                                   onChange={this.handleChange}
-                                   placeholderText="Est. completion date"
-                                   value={this.state.eta}
-                                 />
+                             <div className="columns">
+                               <div className="column">
+                                 <div className="field">
+                                   <label className="label">
+                                     Project status
+                                   </label>
+                                   <div className="control is-expanded">
+                                     <div className="select is-fullwidth">
+                                       <select
+                                         name="status"
+                                         value={this.state.responsible}
+                                         onChange={this.handleChange}
+                                       >
+                                         <option value="">
+                                           Select status...
+                                         </option>
+                                         <option value="Quoted 🤞">
+                                           Quoted 🤞
+                                         </option>
+                                         <option value="Started 👨‍💻">
+                                           Started 👨‍💻
+                                         </option>
+                                         <option value="Done 👊">
+                                           Done 👊
+                                         </option>
+                                         <option value="Invoiced 🤑">
+                                           Invoiced 🤑
+                                         </option>
+                                         <option value="Lost 😢">
+                                           Lost 😢
+                                         </option>
+                                       </select>
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div>
+                               <div className="column">
+                                 <div className="field">
+                                   <label className="label">
+                                     Projected finish date
+                                   </label>
+                                   <div className="control">
+                                     <DatePicker
+                                       type="text"
+                                       className="input"
+                                       dateFormat="dd/MM/yyyy"
+                                       name="eta"
+                                       selected={this.state.eta}
+                                       onChange={this.handleDateChange}
+                                       placeholderText="Est. completion date"
+                                       value={this.state.eta}
+                                     />
+                                   </div>
+                                 </div>
                                </div>
                              </div>
 
-                             <div class="field is-grouped is-grouped-right">
-                               <div class="control">
-                                 <button class="button is-link">
+                             <div className="field is-grouped is-grouped-right">
+                               <div className="control">
+                                 <button className="button is-link">
                                    Add new job
                                  </button>
                                </div>

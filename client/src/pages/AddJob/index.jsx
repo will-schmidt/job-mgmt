@@ -1,43 +1,71 @@
-import React, { Component } from 'react'
-import DatePicker from 'react-datepicker'
-import axios from 'axios'
-import './addjob.css'
+import React, { Component } from "react";
+import {withRouter} from 'react-router-dom'
+import DatePicker from "react-datepicker";
+import axios from "axios";
+import "./addjob.css";
+import { NotificationContext, withNotification } from "../../contexts/notificationContext";
 
+const selectValues = [
+  "",
+  "Quoted 🤞",
+  "Started 👨‍💻",
+  "Done 👊",
+  "Invoiced 🤑",
+  "Lost 😢"
+];
 
-export default class AddJob extends Component {
+const Field = ({ label, placeholder, value, name, handleChange }) => (
+  <div className="field">
+    <label className="label">{label}</label>
+    <div className="control">
+      <input
+        className="input"
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={handleChange}
+        name={name}
+      />
+    </div>
+  </div>
+);
+
+class AddJob extends Component {
   state = {
-    name: '',
-    client: '',
-    description: '',
+    name: "",
+    client: "",
+    description: "",
 
-    type: '',
-    responsible: '',
-    cost: '',
-    value: '',
+    type: "",
+    responsible: "",
+    cost: "",
+    value: "",
     eta: null,
     users: [],
     clients: []
-  }
+  };
+
+  // static contextType = ;
 
   handleChange(event) {
-    const target = event.target
+    const target = event.target;
 
-    const value = target.type === 'checkbox' ? target.checked : target.value
-    const name = target.name
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
 
     this.setState({
       [name]: value
-    })
+    });
   }
   handleDateChange = date => {
     this.setState({
       eta: date
-    })
-  }
+    });
+  };
 
   handleSubmit(event) {
-    event.preventDefault()
-    const newJob = this.state
+    event.preventDefault();
+    const newJob = this.state;
     // console.log(newJob)
 
     // try {
@@ -46,14 +74,18 @@ export default class AddJob extends Component {
     //   console.log(`Failed {error}`)
     // }
 
-    axios
-      .post('http://localhost:5000/add-job', newJob)
-      .then(response => {
-        this.props.history.push("/")
-      })
-      .catch(error => {
-        console.log(error.response)
-      })
+    // axios
+    //   .post("http://localhost:5000/add-job", newJob)
+    //   .then(response => {
+       
+        
+    //   })
+    //   .catch(error => {
+    //     console.log(error.response);
+    //   });
+    
+      this.props.setIsNotified(true)
+      this.props.history.push("/");
 
     // console.log(this.state)
 
@@ -61,18 +93,20 @@ export default class AddJob extends Component {
   }
 
   async componentDidMount() {
-    const userResponse = await axios(`http://localhost:5000/users`)
-    const clientsResponse = await axios(`http://localhost:5000/clients`)
+    const userResponse = await axios(`http://localhost:5000/users`);
+    const clientsResponse = await axios(`http://localhost:5000/clients`);
     this.setState({
       users: userResponse.data,
       clients: clientsResponse.data
-    })
-    console.log(this.state.clients)
+    });
+    console.log(this.state.clients);
   }
 
   render() {
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    console.log(this.props)
 
     return (
       <div className="container is-widescreen">
@@ -104,7 +138,9 @@ export default class AddJob extends Component {
                     >
                       <option value="">Select a client...</option>
                       {this.state.clients.map(client => {
-                        return <option value={client._id}>{client.name}</option>
+                        return (
+                          <option value={client._id}>{client.name}</option>
+                        );
                       })}
                     </select>
                   </div>
@@ -132,7 +168,7 @@ export default class AddJob extends Component {
                           type="radio"
                           name="type"
                           value="Design"
-                          checked={this.state.type === 'Design'}
+                          checked={this.state.type === "Design"}
                           onChange={this.handleChange}
                         />
                         &nbsp;Design
@@ -142,7 +178,7 @@ export default class AddJob extends Component {
                           type="radio"
                           name="type"
                           value="Development"
-                          checked={this.state.type === 'Development'}
+                          checked={this.state.type === "Development"}
                           onChange={this.handleChange}
                         />
                         &nbsp;Development
@@ -166,7 +202,7 @@ export default class AddJob extends Component {
                               <option value={user._id}>
                                 {user.firstName} {user.lastName}
                               </option>
-                            )
+                            );
                           })}
                         </select>
                       </div>
@@ -192,19 +228,12 @@ export default class AddJob extends Component {
                   </div>
                 </div>
                 <div className="column">
-                  <div className="field">
-                    <label className="label">Estimated billable</label>
-                    <div className="control">
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder="Estimate of what client will be invoiced"
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        name="value"
-                      />
-                    </div>
-                  </div>
+                  <Field
+                    value={this.state.value}
+                    handleChange={this.handleChange}
+                    placeholder="Estimate of what client will be invoiced"
+                    label="Estimated billable"
+                  />
                 </div>
               </div>
               <div className="columns">
@@ -218,12 +247,11 @@ export default class AddJob extends Component {
                           value={this.state.responsible}
                           onChange={this.handleChange}
                         >
-                          <option value="">Select status...</option>
-                          <option value="Quoted 🤞">Quoted 🤞</option>
-                          <option value="Started 👨‍💻">Started 👨‍💻</option>
-                          <option value="Done 👊">Done 👊</option>
-                          <option value="Invoiced 🤑">Invoiced 🤑</option>
-                          <option value="Lost 😢">Lost 😢</option>
+                          {selectValues.map(value => (
+                            <option key={value} value={value}>
+                              {value ? value : "Select status..."}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -258,6 +286,9 @@ export default class AddJob extends Component {
           <div className="column"></div>
         </div>
       </div>
-    )
+    );
   }
 }
+
+
+export default withNotification(AddJob)

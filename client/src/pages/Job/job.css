@@ -1,0 +1,9 @@
+.job-notes {
+  margin: 1rem 0;
+  padding: 1.5rem;
+}
+
+.modal header,
+.modal footer {
+  margin: 0;
+}

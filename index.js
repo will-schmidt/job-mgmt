@@ -109,6 +109,14 @@ app.get('/users/:id', async (req, res) => {
   }
 })
 
+app.put('/update-user/:id', (req, res) => {
+  const response = User.update({ _id: req.params.id }, req.body)
+    .then(res.sendStatus(200))
+    .catch(function(err) {
+      throw err // or handle it
+    })
+})
+
 app.post('/create-job-note', async (req, res) => {
   try {
     const { body } = req
@@ -123,8 +131,9 @@ app.post('/create-job-note', async (req, res) => {
 
     jobNote.save().then(() => {
       console.log('New note added')
-      res.sendStatus(200)
     })
+
+    res.sendStatus(200)
   } catch (error) {
     console.log(error.message)
     res.sendStatus(500)

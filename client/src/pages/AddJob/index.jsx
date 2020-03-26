@@ -68,21 +68,17 @@ class AddJob extends Component {
     const newJob = this.state;
     // console.log(newJob)
 
-    // try {
-    //   axios.post('http://localhost:5000/add-job', newJob)
-    // } catch (error) {
-    //   console.log(`Failed {error}`)
-    // }
+  
 
-    // axios
-    //   .post("http://localhost:5000/add-job", newJob)
-    //   .then(response => {
+    axios
+      .post("http://localhost:5000/add-job", newJob)
+      .then(response => {
        
         
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response);
-    //   });
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
     
       this.props.setIsNotified(true)
       this.props.history.push("/");
@@ -232,7 +228,7 @@ class AddJob extends Component {
                     value={this.state.value}
                     handleChange={this.handleChange}
                     placeholder="Estimate of what client will be invoiced"
-                    label="Estimated billable"
+                    label="Estimated billable" name="value"
                   />
                 </div>
               </div>

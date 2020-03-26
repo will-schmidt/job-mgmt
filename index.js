@@ -109,6 +109,14 @@ app.get('/users/:id', async (req, res) => {
   }
 })
 
+app.put('/update-user/:id', (req, res) => {
+  const response = User.update({ _id: req.params.id }, req.body)
+    .then(res.sendStatus(200))
+    .catch(function(err) {
+      throw err // or handle it
+    })
+})
+
 app.post('/create-job-note', async (req, res) => {
   try {
     const { body } = req

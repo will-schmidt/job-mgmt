@@ -15,6 +15,7 @@ export default class Job extends Component {
 
   async componentDidMount() {
     const jobId = this.props.match.params.jobId;
+    
     const jobRes = await axios(`http://localhost:5000/jobs/${jobId}`);
     this.setState({
       job: jobRes.data.job

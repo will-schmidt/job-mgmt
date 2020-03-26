@@ -1,46 +1,79 @@
-import React, { Component } from "react";
-import "./job.css";
-import axios from "axios";
-import moment from "moment";
+import React, { Component } from 'react'
+import './job.css'
+import axios from 'axios'
+import moment from 'moment'
 
 export default class Job extends Component {
   state = {
     job: null,
     jobNotes: [],
-    dateCreated: new Date().toLocaleString(),
-    body: "",
-    createdby: "5e671514082b3cbdb9b05184",
+    dateCreated: new Date(),
+    body: '',
+    createdby: '5e671514082b3cbdb9b05184',
     isModal: false
-  };
+  }
 
   async componentDidMount() {
-    const jobId = this.props.match.params.jobId;
-    
-    const jobRes = await axios(`http://localhost:5000/jobs/${jobId}`);
+    const jobId = this.props.match.params.jobId
+    const jobRes = await axios(`http://localhost:5000/jobs/${jobId}`)
     this.setState({
       job: jobRes.data.job
-    });
-    console.log(this.state.job);
+    })
+    console.log(this.state.job)
 
     const jobNotesRes = await axios(
       `http://localhost:5000/get-job-notes/${jobId}`
-    );
+    )
 
     this.setState({
       jobNotes: jobNotesRes.data.jobNotes
-    });
-    console.log(this.state.jobNotes);
+    })
+    console.log(this.state.jobNotes)
   }
 
   handleClick = e => {
-    e.preventDefault();
-    this.setState({ isModal: !this.state.isModal });
-  };
+    e.preventDefault()
+    this.setState({ isModal: !this.state.isModal })
+  }
+
+  handleChange(e) {
+    const target = e.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const name = target.name
+
+    this.setState({
+      [name]: value
+    })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault()
+    const newNote = {
+      body: this.state.body,
+      job: this.state.job._id,
+      createdBy: this.state.createdby,
+      dateCreated: this.state.dateCreated
+    }
+
+    axios
+      .post('http://localhost:5000/create-job-note', newNote)
+      .then(response => {
+        // this.props.history.push('/')
+        console.log('note added')
+        this.componentDidMount()
+        this.setState({ isModal: !this.state.isModal })
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
+  }
 
   render() {
-    console.log(`Date is ${this.state.dateCreated}`);
-    const active = this.state.isModal ? "is-active" : "";
-    if (!this.state.job) return null;
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+
+    const active = this.state.isModal ? 'is-active' : ''
+    if (!this.state.job) return null
     return (
       <div className="container is-widescreen">
         <div class="columns">
@@ -53,8 +86,8 @@ export default class Job extends Component {
                   </h1>
                   <div className="level-right">
                     <p className="subtitle is-5 has-text-left">
-                      <strong>Due:</strong>{" "}
-                      {moment(this.state.job.eta).format("D MMM YYYY")}
+                      <strong>Due:</strong>{' '}
+                      {moment(this.state.job.eta).format('D MMM YYYY')}
                     </p>
                   </div>
                 </div>
@@ -65,41 +98,45 @@ export default class Job extends Component {
               </div>
             </div>
             <div class="job-notes">
-              {this.state.jobNotes.length > 0 ? (
-                <div>
-                  <div className="columns">
-                    <div className="column">
-                      <h2 className="title is-5 has-text-left">Notes</h2>
-                    </div>
-                    <div className="column">
-                      <button onClick={this.handleClick} className="button">
-                        Add new note
-                      </button>
-                    </div>
+              <div>
+                <div className="columns">
+                  <div className="column">
+                    <h2 className="title is-5 has-text-left">
+                      {this.state.jobNotes.length > 0 ? (
+                        "Notes"
+                      ) : (
+                        
+                          "No notes added"
+                        
+                      )}
+                    </h2>
                   </div>
-
-                  {this.state.jobNotes.map(note => {
-                    return (
-                      <article class="message">
-                        <div class="message-body has-text-left">
-                          <strong>
-                            Added by {note.createdBy.firstName}
-                            {note.createdBy.lastName}
-                          </strong>
-                          on
-                          <strong>
-                            {moment(note.dateCreated).format("D MMM YYYY")}
-                          </strong>
-                          <br />
-                          {note.body}
-                        </div>
-                      </article>
-                    );
-                  })}
+                  <div className="column">
+                    <button onClick={this.handleClick} className="button">
+                      Add new note
+                    </button>
+                  </div>
                 </div>
-              ) : (
-                <h2 className="title is-5 has-text-left">No notes added</h2>
-              )}
+
+                {this.state.jobNotes.map(note => {
+                  return (
+                    <article class="message">
+                      <div class="message-body has-text-left">
+                        <strong>
+                          Added by {note.createdBy.firstName}{' '}
+                          {note.createdBy.lastName}
+                        </strong>{' '}
+                        on{' '}
+                        <strong>
+                          {moment(note.dateCreated).format('D MMM YYYY')}
+                        </strong>
+                        <br />
+                        {note.body}
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
             </div>
           </div>
           <div class="column">
@@ -108,8 +145,8 @@ export default class Job extends Component {
             </h2>
 
             <h2 className="subtitle is-5 has-text-left">
-              <strong>Responsible:</strong>{" "}
-              {this.state.job.responsible.firstName}{" "}
+              <strong>Responsible:</strong>{' '}
+              {this.state.job.responsible.firstName}{' '}
               {this.state.job.responsible.lastName}
             </h2>
           </div>
@@ -133,7 +170,10 @@ export default class Job extends Component {
                     <div className="control">
                       <textarea
                         className="textarea"
-                        placeholder="Write your note"
+                        placeholder="Type in your note..."
+                        value={this.state.description}
+                        onChange={this.handleChange}
+                        name="body"
                       ></textarea>
                     </div>
                   </div>
@@ -149,6 +189,6 @@ export default class Job extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }

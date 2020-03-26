@@ -131,8 +131,9 @@ app.post('/create-job-note', async (req, res) => {
 
     jobNote.save().then(() => {
       console.log('New note added')
-      res.sendStatus(200)
     })
+
+    res.sendStatus(200)
   } catch (error) {
     console.log(error.message)
     res.sendStatus(500)

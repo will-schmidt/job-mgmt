@@ -22,8 +22,13 @@ const Field = ({ label, placeholder, value, name, handleChange }) => (
 
 export default class UpdateUser extends Component {
   state = {
-    user: []
+    firstName: undefined,
+    lastName: undefined,
+    email: undefined,
+    type: undefined,
+    phone: undefined
   }
+
   handleChange(event) {
     const target = event.target
 
@@ -33,12 +38,29 @@ export default class UpdateUser extends Component {
     this.setState({
       [name]: value
     })
+    console.log(this.state)
   }
 
   handleSubmit(event) {
     event.preventDefault()
-    const newUser = this.state.user
-    console.log(`newUser: ${newUser}`)
+
+    const updateUser = this.state
+    const usrId = this.props.match.params.userId
+    // console.log(newJob)
+
+    axios
+      .put(`http://localhost:5000/update-user/${usrId}`, updateUser)
+      .then(response => {
+        console.log('user updated')
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
+    
+
+
+    // const newUser = this.state
+    // console.log(`newUser: ${newUser}`)
     // this.props.setIsNotified(true)
     // this.props.history.push('/')
   }
@@ -46,30 +68,38 @@ export default class UpdateUser extends Component {
   async componentDidMount() {
     const usrId = this.props.match.params.userId
     const usrRes = await axios(`http://localhost:5000/users/${usrId}`)
+    
+
     this.setState({
-      user: usrRes.data.user
+      email: usrRes.data.user.email,
+      firstName: usrRes.data.user.firstName,
+      lastName: usrRes.data.user.lastName,
+      type: usrRes.data.user.type,
+      phone: usrRes.data.user.phone
     })
-    console.log(usrRes)
-    console.log(this.state.user)
+    // console.log(usrRes)
+    
   }
 
   render() {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    if (!this.state.user) return null
+    
+    if (!this.state.email) return null
     return (
       <div className="container is-widescreen">
         <h1 className="title is-3 has-text-left">
-          Update user: {this.state.firstName}&nbsp;
-          {this.state.user.lastName}
+          Update user: { this.state.firstName &&
+          this.state.lastName ? this.state.firstName + ` `
+          + this.state.lastName : this.state.email }
         </h1>
         <div className="columns">
           <div className="column">
-            <form Submit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit}>
               <div className="columns">
                 <div className="column">
                   <Field
-                    value={this.state.user.firstName}
+                    value={this.state.firstName}
                     handleChange={this.handleChange}
                     label="First name"
                     name="firstName"
@@ -77,7 +107,7 @@ export default class UpdateUser extends Component {
                 </div>
                 <div className="column">
                   <Field
-                    value={this.state.user.lastName}
+                    value={this.state.lastName}
                     handleChange={this.handleChange}
                     label="Last name"
                     name="lastName"
@@ -87,7 +117,7 @@ export default class UpdateUser extends Component {
               <div className="columns">
                 <div className="column">
                   <Field
-                    value={this.state.user.email}
+                    value={this.state.email}
                     handleChange={this.handleChange}
                     label="Email address"
                     name="email"
@@ -95,7 +125,7 @@ export default class UpdateUser extends Component {
                 </div>
                 <div className="column">
                   <Field
-                    value={this.state.user.phone}
+                    value={this.state.phone}
                     handleChange={this.handleChange}
                     label="Phone number"
                     name="phone"
@@ -108,7 +138,7 @@ export default class UpdateUser extends Component {
                   <div className="select is-fullwidth">
                     <select
                       name="type"
-                      value={this.state.user.type}
+                      value={this.state.type}
                       onChange={this.handleChange}
                     >
                       {selectValues.map(value => (
@@ -120,7 +150,7 @@ export default class UpdateUser extends Component {
                   </div>
                 </div>
                 <div className="column">
-                  <div className="field">
+                  {/* <div className="field">
                     <label className="label">Password</label>
                     <div className="control">
                       <input
@@ -131,7 +161,7 @@ export default class UpdateUser extends Component {
                         onChange={this.handleChange}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="field is-grouped is-grouped-right">

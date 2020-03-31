@@ -5,21 +5,23 @@ import { login } from '../../utils/api'
 export default class SignIn extends Component {
   state = {
     email: '',
-    password: ''
+    password: '',
+    showSuccess: undefined
   }
 
-  handleChange = (e) => this.setState({  [e.target.name]: e.target.value })
+  handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
+  handleSubmit = async event => {
+    event.preventDefault()
     try {
-      const response = await login(this.state);
+      const response = await login(this.state)
       if (response.ok) {
-        this.props.history.push('/');
+        this.props.history.push('/')
       }
-     
     } catch (err) {
-      console.log(err)
+      this.setState({
+        showSuccess: false
+      }) 
     }
   }
   render() {
@@ -35,7 +37,7 @@ export default class SignIn extends Component {
                     Don't have an account?&nbsp;
                     <Link to="/signup">Click here to register</Link>.
                   </p>
-                  
+
                   <div className="columns">
                     <div className="column">
                       <div className="field">
@@ -66,7 +68,6 @@ export default class SignIn extends Component {
                       </div>
                     </div>
                   </div>
-                  
                 </div>
 
                 <footer class="card-footer">
@@ -80,11 +81,35 @@ export default class SignIn extends Component {
                 </footer>
               </div>
             </form>
+            <br />
+            {console.log(this.state.showSuccess)}
+            {this.state.showSuccess ? (
+              <div className="notification is-success signup-success">
+                <button className="delete"></button>
+                <strong className="subtitle">
+                  <b>New User Created</b>
+                </strong>
+                <br />
+                We've created a new account with the details you've provided.
+                <br />
+                <Link to="/signin">Click here to log in</Link>.
+              </div>
+            ) : typeof this.state.showSuccess == 'undefined' ? null : (
+              <div className="notification is-warning signup-success">
+                <button className="delete"></button>
+                <strong className="subtitle">
+                  <b>Uh oh, sign in unsucessful</b>
+                </strong>
+                <br />
+                Oops, something went wrong. Please check your username and
+                password and try to log in again.
+                <br />
+                Still having issues? Please contact support.
+              </div>
+            )}
           </div>
         </div>
       </div>
     )
   }
 }
-
-

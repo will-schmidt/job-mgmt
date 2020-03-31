@@ -112,6 +112,28 @@ app.get('/clients/:id', async (req, res) => {
   }
 })
 
+app.delete('/delete-client/:id', async (req, res) => {
+  try {
+    const client = await Client.findByIdAndDelete(req.params.id)
+
+    if (!client) res.status(404).send('No item found')
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+app.patch('/update-client/:id', async (req, res) => {
+  try {
+    await Client.findByIdAndUpdate(req.params.id, req.body)
+    await Client.save()
+    res.send(client)
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
 // POST route to register a user
 app.post('/sign-up', (req, res) => {
   const { body } = req
@@ -228,12 +250,34 @@ app.get('/users/:id', async (req, res) => {
   }
 })
 
-app.put('/update-user/:id', (req, res) => {
-  const response = User.update({ _id: req.params.id }, req.body)
-    .then(data => res.send(data))
-    .catch(function(err) {
-      console.log(err) // or handle it
-    })
+app.delete('/delete-user/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+
+    if (!user) res.status(404).send('No item found')
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+// app.put('/update-user/:id', (req, res) => {
+//   const response = User.update({ _id: req.params.id }, req.body)
+//     .then(data => res.send(data))
+//     .catch(function(err) {
+//       console.log(err) // or handle it
+//     })
+// })
+
+app.patch('/update-user/:id', async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.params.id, req.body)
+    await User.save()
+    res.send(user)
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
 })
 
 app.post('/create-job-note', async (req, res) => {
@@ -285,6 +329,28 @@ app.get('/get-job-notes/:id', async (req, res) => {
   }
 })
 
+app.delete('/delete-job-note/:id', async (req, res) => {
+  try {
+    const jobNote = await JobNote.findByIdAndDelete(req.params.id)
+
+    if (!jobNote) res.status(404).send('No item found')
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+app.put('/update-job-note/:id', async (req, res) => {
+  try {
+    await JobNote.findByIdAndUpdate(req.params.id, req.body)
+    await JobNote.save()
+    res.send(jobNote)
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
 app.post('/add-job', async (req, res) => {
   try {
     const { body } = req
@@ -304,6 +370,28 @@ app.post('/add-job', async (req, res) => {
   } catch (error) {
     console.error(error.message)
     res.sendStatus(500)
+  }
+})
+
+app.patch('/update-job/:id', async (req, res) => {
+  try {
+    await Job.findByIdAndUpdate(req.params.id, req.body)
+    await Job.save()
+    res.send(job)
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+app.delete('/delete-job/:id', async (req, res) => {
+  try {
+    const job = await Job.findByIdAndDelete(req.params.id)
+
+    if (!job) res.status(404).send('No item found')
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send(err)
   }
 })
 

@@ -49,7 +49,7 @@ export default class UpdateUser extends Component {
     // console.log(newJob)
 
     axios
-      .put(`http://localhost:5000/update-user/${usrId}`, updateUser)
+      .patch(`http://localhost:5000/update-user/${usrId}`, updateUser)
       .then(response => {
         console.log('user updated')
       })
@@ -75,9 +75,10 @@ export default class UpdateUser extends Component {
       firstName: usrRes.data.user.firstName,
       lastName: usrRes.data.user.lastName,
       type: usrRes.data.user.type,
-      phone: usrRes.data.user.phone
+      phone: usrRes.data.user.phone,
+      userId: usrId
     })
-    // console.log(usrRes)
+    console.log(this.state)
     
   }
 
@@ -89,9 +90,10 @@ export default class UpdateUser extends Component {
     return (
       <div className="container is-widescreen">
         <h1 className="title is-3 has-text-left">
-          Update user: { this.state.firstName &&
-          this.state.lastName ? this.state.firstName + ` `
-          + this.state.lastName : this.state.email }
+          Update user:{' '}
+          {this.state.firstName && this.state.lastName
+            ? this.state.firstName + ` ` + this.state.lastName
+            : this.state.email}
         </h1>
         <div className="columns">
           <div className="column">
@@ -164,14 +166,25 @@ export default class UpdateUser extends Component {
                   </div> */}
                 </div>
               </div>
-              <div className="field is-grouped is-grouped-right">
-                <div className="control">
-                  <a class="button is-light" href="/users/">
-                    Cancel
-                  </a>
+              <div className="columns">
+                <div className="column">
+                  <div className="field is-grouped is-grouped-left">
+                    <div className="control">
+                      <a class="button is-danger" href={`/users/delete/${this.state.userId}`}>Delete user</a>
+                    </div>
+                  </div>
                 </div>
-                <div className="control">
-                  <button className="button is-link">Update user</button>
+                <div className="column">
+                  <div className="field is-grouped is-grouped-right">
+                    <div className="control">
+                      <a class="button is-light" href="/users/">
+                        Cancel
+                      </a>
+                    </div>
+                    <div className="control">
+                      <button className="button is-link">Update user</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>

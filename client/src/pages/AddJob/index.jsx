@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import axios from "axios";
 import "./addjob.css";
 import { NotificationContext, withNotification } from "../../contexts/notificationContext";
+import Field from '../../components/InputField'
 
 const selectValues = [
   "",
@@ -14,28 +15,11 @@ const selectValues = [
   "Lost 😢"
 ];
 
-const Field = ({ label, placeholder, value, name, handleChange }) => (
-  <div className="field">
-    <label className="label">{label}</label>
-    <div className="control">
-      <input
-        className="input"
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
-        name={name}
-      />
-    </div>
-  </div>
-);
-
 class AddJob extends Component {
   state = {
     name: "",
     client: "",
     description: "",
-
     type: "",
     responsible: "",
     cost: "",
@@ -45,9 +29,7 @@ class AddJob extends Component {
     clients: []
   };
 
-  // static contextType = ;
-
-  handleChange(event) {
+  handleChange = (event) => {
     const target = event.target;
 
     const value = target.type === "checkbox" ? target.checked : target.value;
@@ -63,47 +45,34 @@ class AddJob extends Component {
     });
   };
 
-  handleSubmit(event) {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    const newJob = this.state;
-    // console.log(newJob)
+    try {
+      const newJob = this.state;
 
-  
-
-    axios
-      .post("http://localhost:5000/add-job", newJob)
-      .then(response => {
+      await axios
+        .post("http://localhost:5000/add-job", newJob)
        
-        
-      })
-      .catch(error => {
-        console.log(error.response);
-      });
-    
       this.props.setIsNotified(true)
       this.props.history.push("/");
 
-    // console.log(this.state)
-
-    // event.preventDefault()
+    } catch(err) {
+      console.log(error.response);
+    }
+  
   }
 
   async componentDidMount() {
     const userResponse = await axios(`http://localhost:5000/users`);
     const clientsResponse = await axios(`http://localhost:5000/clients`);
+
     this.setState({
       users: userResponse.data,
       clients: clientsResponse.data
     });
-    console.log(this.state.clients);
   }
 
   render() {
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
-    console.log(this.props)
-
     return (
       <div className="container is-widescreen">
         <h1 className="title is-3 has-text-left">Add New Job</h1>

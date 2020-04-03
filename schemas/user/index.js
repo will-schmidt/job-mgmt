@@ -9,15 +9,21 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, required: true },
   type: { type: String }
-})
+});
 
-userSchema.pre('save', function(next) {
+const hashPassword = (password) => {
+  console.log(password)
+  return bcrypt.hash(password, saltRounds, function (err, hashedPassword) {
+    return hashedPassword;
+  })
+}
+
+userSchema.pre('save', async function(next) {
   // Check if document is new or a new password has been set
   if (this.isNew || this.isModified('password')) {
     // Saving reference to this because of changing scopes
-    const document = this
+    const document = this;
 
-    console.log(document)
     bcrypt.hash(document.password, saltRounds, function(err, hashedPassword) {
       if (err) {
         next(err)
@@ -30,7 +36,7 @@ userSchema.pre('save', function(next) {
   } else {
     next()
   }
-})
+});
 
 userSchema.methods.isCorrectPassword = function(password, callback) {
   bcrypt.compare(password, this.password, function(err, same) {

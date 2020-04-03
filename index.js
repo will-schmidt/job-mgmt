@@ -4,6 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 const Client = require('./schemas/client')
 const Job = require('./schemas/job')
 const JobNote = require('./schemas/jobNote')
@@ -11,6 +12,7 @@ const User = require('./schemas/user')
 const cookieParser = require('cookie-parser')
 const utils = require('./utils')
 const port = 5000
+const saltRounds = 10
 
 const getUserFromToken = token =>
   jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
@@ -137,7 +139,11 @@ app.patch('/update-client/:id', async (req, res) => {
 // POST route to register a user
 app.post('/sign-up', (req, res) => {
   const { body } = req
+
+  console.log(body)
   const user = new User(body)
+
+
 
   user.save(function(err) {
     if (err) {
@@ -271,11 +277,31 @@ app.delete('/delete-user/:id', async (req, res) => {
 
 app.patch('/update-user/:id', async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.params.id, req.body)
-    await User.save()
-    res.send(user)
-    res.sendStatus(200)
+
+    if(req.body.password){
+      return bcrypt.hash(req.body.password, saltRounds, async function (err, hashedPassword) {
+        const user = {
+          ...req.body,
+          password: hashedPassword
+        }
+        await User.findByIdAndUpdate(req.params.id, user);
+
+        return User.findOne({ _id: req.params.id }, function (err, foundUser) {
+
+          return res.json({ user: foundUser })
+        })
+      })
+    }
+
+    await User.findByIdAndUpdate(req.params.id, req.body);
+
+    User.findOne({ _id: req.params.id }, function (err, foundUser) {
+     
+      return res.json({ user: foundUser })
+    })
+
   } catch (err) {
+    console.log(err.message)
     res.status(500).send(err)
   }
 })

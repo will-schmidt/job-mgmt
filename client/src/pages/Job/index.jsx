@@ -30,7 +30,7 @@ export default class Job extends Component {
     this.setState({isModal: !this.state.isModal});
   };
 
-  handleChange(e) {
+  handleChange = (e) => {
     const target = e.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
@@ -40,7 +40,7 @@ export default class Job extends Component {
     });
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
     const newNote = {
       body: this.state.body,
@@ -63,8 +63,6 @@ export default class Job extends Component {
   }
 
   render() {
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
 
     const active = this.state.isModal ? "is-active" : "";
     if (!this.state.job) return null;

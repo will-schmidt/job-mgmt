@@ -1,32 +1,18 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Route, Link } from 'react-router-dom'
 import axios from 'axios'
+import Field from '../../../components/InputField'
 
-const selectValues = ['Standard', 'Admin']
-
-const Field = ({ label, placeholder, value, name, handleChange }) => (
-  <div className="field">
-    <label className="label">{label}</label>
-    <div className="control">
-      <input
-        className="input"
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
-        name={name}
-      />
-    </div>
-  </div>
-)
+const selectValues = ['Standard', 'Admin'];
 
 export default class UpdateUser extends Component {
   state = {
-    firstName: undefined,
-    lastName: undefined,
-    email: undefined,
-    type: undefined,
-    phone: undefined
+    firstName: '',
+    lastName: '',
+    email: '',
+    type: '',
+    phone: '',
+    password: '',
+    userId: this.props.match.params.userId
   }
 
   handleChange(event) {
@@ -45,11 +31,11 @@ export default class UpdateUser extends Component {
     event.preventDefault()
 
     const updateUser = this.state
-    const usrId = this.props.match.params.userId
+    const { userId } = this.props.match.params
     // console.log(newJob)
 
     axios
-      .patch(`http://localhost:5000/update-user/${usrId}`, updateUser)
+      .patch(`http://localhost:5000/update-user/${userId}`, updateUser)
       .then(response => {
         console.log('user updated')
       })
@@ -66,20 +52,16 @@ export default class UpdateUser extends Component {
   }
 
   async componentDidMount() {
-    const usrId = this.props.match.params.userId
-    const usrRes = await axios(`http://localhost:5000/users/${usrId}`)
-    
+    const { userId } = this.props.match.params;
+    const {data : { user: { email, firstName, lastName, type, phone } }} = await axios(`http://localhost:5000/users/${userId}`)
 
     this.setState({
-      email: usrRes.data.user.email,
-      firstName: usrRes.data.user.firstName,
-      lastName: usrRes.data.user.lastName,
-      type: usrRes.data.user.type,
-      phone: usrRes.data.user.phone,
-      userId: usrId
+      email,
+      firstName,
+      lastName,
+      type,
+      phone,
     })
-    console.log(this.state)
-    
   }
 
   render() {
@@ -152,18 +134,18 @@ export default class UpdateUser extends Component {
                   </div>
                 </div>
                 <div className="column">
-                  {/* <div className="field">
+                  <div className="field">
                     <label className="label">Password</label>
                     <div className="control">
                       <input
                         className="input"
                         type="password"
                         name="password"
-                        value={this.state.user.password}
+                        value={this.state.password}
                         onChange={this.handleChange}
                       />
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
               <div className="columns">

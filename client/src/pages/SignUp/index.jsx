@@ -2,6 +2,25 @@ import React, {Component} from "react";
 import {BrowserRouter as Route, Link} from "react-router-dom";
 import axios from "axios";
 
+// const fields = [
+//   {label : 'First Name', name: 'firstName'}
+// ];
+
+// fields.map(field => 
+// <label className="label">{field.label}</label>
+//   <div className="control">
+//     <input
+//       className="input"
+//       type="text"
+//       placeholder="Type your first name"
+//       name={field.name}
+//       value={this.state[field.name]}
+//       onChange={this.handleChange}
+//     />
+//   </div>  
+// )
+
+
 export default class SignUp extends Component {
   state = {
     firstName: "",
@@ -13,11 +32,9 @@ export default class SignUp extends Component {
     showSuccess: undefined
   };
 
-  handleChange(event) {
-    const target = event.target;
-
+  handleChange({target }) {
     const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+    const { name } = target;
 
     this.setState({
       [name]: value
